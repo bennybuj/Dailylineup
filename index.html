@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daily Lineup</title>
+<meta name="description" content="A new NHL team and game every day. Name the full lineup: 12 forwards, 6 D and the starting goalie.">
+<meta property="og:title" content="Daily Lineup">
+<meta property="og:description" content="A new NHL team and game every day. Can you name the whole lineup?">
+<meta property="og:url" content="https://dailylineup.ca">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#00205B; --navy2:#0a2f73; --line:#23498f; --ice:#f4f7fb; --slot:#ffffff; --slotLine:#c9d3e3;
+    --gold:#ffd23f; --goldInk:#00205B; --red:#e5484d; --green:#2fbf71; --muted:rgba(255,255,255,.66);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--navy);color:#fff;font-family:Inter,system-ui,sans-serif;transition:background .4s}
+  body{background:radial-gradient(120% 60% at 50% 0%,var(--navy2) 0%,var(--navy) 60%) fixed,var(--navy)}
+  body{border-top:6px solid var(--line)}
+  .wrap{max-width:560px;margin:0 auto;padding:16px 14px 40px}
+  header{text-align:center}
+  .brand{font:600 13px/1 Inter;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}
+  .logo{width:88px;height:88px;margin:12px auto 0;border-radius:50%;display:flex;align-items:center;justify-content:center;
+        font:700 24px/1 Oswald;letter-spacing:.04em;box-shadow:0 0 0 3px var(--gold);overflow:hidden}
+  .logo img{width:100%;height:100%;object-fit:contain;background:#fff;padding:10px}
+  .date{font:700 clamp(34px,9vw,52px)/1 Oswald;letter-spacing:.02em;margin:8px 0 2px;text-transform:uppercase}
+  .team{font:600 clamp(22px,6vw,30px)/1.1 Oswald;letter-spacing:.04em;text-transform:uppercase;color:var(--gold)}
+  .meta{font-size:13px;color:var(--muted);margin-top:6px}
+  .rulesline{text-align:center;font-size:13px;color:rgba(255,255,255,.8);margin:2px 0 4px}
+  .rules{background:#fff;color:var(--navy);border-radius:12px;padding:14px 14px 10px;margin:16px 0 4px;box-shadow:0 4px 0 var(--gold)}
+  .rtitle{font:700 22px/1 Oswald;text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px}
+  .rrow{display:flex;gap:10px;align-items:flex-start;font-size:16px;line-height:1.35;padding:5px 0}
+  .rrow span{font-size:20px;line-height:1.1;width:24px;flex:0 0 24px;text-align:center}
+  .board{margin:18px 0 6px;display:grid;gap:14px}
+  .label{font:600 11px/1 Inter;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+  .grid{display:grid;gap:6px}
+  .fwd{grid-template-columns:repeat(3,1fr)}
+  .def{grid-template-columns:repeat(2,1fr);width:68%;margin:0 auto}
+  .gol{grid-template-columns:1fr;width:34%;margin:0 auto}
+  .colhead{font:600 10px/1 Inter;letter-spacing:.14em;color:var(--muted);text-align:center;padding-bottom:2px}
+  .slot{background:var(--slot);color:var(--navy);height:34px;border-radius:3px;display:flex;align-items:center;justify-content:center;
+        font:600 clamp(11px,3.3vw,14px)/1 Oswald;letter-spacing:.03em;text-transform:uppercase;padding:0 4px;text-align:center;
+        box-shadow:inset 0 -2px 0 var(--slotLine);transition:transform .2s, background .3s}
+  .slot.hint{color:#7a8aa8}
+  .slot.found{animation:pop .35s ease}
+  .slot.missed{background:#ffe3e4;color:var(--red)}
+  @keyframes pop{0%{transform:scale(.85);background:var(--gold)}100%{transform:scale(1)}}
+  .stats{display:flex;justify-content:center;gap:18px;font-size:14px;margin:14px 0 4px}
+  .stats b{font:700 18px Oswald;color:var(--gold)}
+  form{position:relative;margin-top:10px}
+  input{width:100%;font:600 17px Inter;padding:14px 14px;border-radius:8px;border:0;outline:3px solid transparent;color:var(--navy)}
+  input:focus{outline-color:var(--gold)}
+  .sugg{position:absolute;left:0;right:0;top:100%;background:#fff;border-radius:0 0 8px 8px;overflow:hidden;z-index:5;box-shadow:0 8px 20px rgba(0,0,0,.3)}
+  .sugg button{display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid #e6ebf3;padding:11px 14px;font:600 15px Inter;color:var(--navy)}
+  .msg{min-height:22px;text-align:center;font-weight:600;margin-top:8px;font-size:14px}
+  .msg.bad{color:#ff9a9e}.msg.good{color:var(--green)}
+  .row{display:flex;gap:8px;margin-top:10px}
+  .btn{flex:1;border:0;border-radius:8px;padding:12px 8px;font:600 14px Inter;background:var(--navy2);color:#fff;border:1px solid var(--line)}
+  .btn.primary{background:var(--gold);color:var(--goldInk);border-color:var(--gold)}
+  .btn:disabled{opacity:.4}
+  .end{display:none !important;text-align:center;margin-top:16px;background:var(--navy2);border-radius:10px;padding:16px}
+  .end.show{display:block}
+  .end h2{font:700 28px Oswald;margin:0 0 4px;text-transform:uppercase}
+  .end pre{font:15px/1.5 ui-monospace,Menlo,monospace;background:rgba(0,0,0,.3);border-radius:8px;padding:10px;white-space:pre-wrap;margin:10px 0}
+  .overlay{position:fixed;inset:0;background:rgba(0,10,35,.72);display:none;align-items:center;justify-content:center;z-index:50;padding:18px}
+  .overlay.show{display:flex;animation:fade .25s ease}
+  .card{--c-bg:#00205B;--c-bg2:#0d3a8a;--c-acc:var(--gold);--c-ink:#00205B;
+        background:linear-gradient(160deg,var(--c-bg2),var(--c-bg));border:3px solid var(--c-border,var(--c-acc));border-radius:18px;width:100%;max-width:380px;
+        padding:22px 20px 18px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:rise .45s cubic-bezier(.2,1.4,.4,1)}
+  .card .tag{font:600 11px/1 Inter;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}
+  .card h2{font:700 30px/1.05 Oswald;margin:8px 0 2px;text-transform:uppercase}
+  .bigpts{font:700 64px/1 Oswald;color:var(--c-acc);margin:10px 0 0;text-shadow:0 0 24px rgba(255,255,255,.18)}
+  .card .tag,.card .ptslabel{color:rgba(255,255,255,.7)}
+  .card .breakdown{color:rgba(255,255,255,.85)}
+  .card .rank{color:var(--c-acc)}
+  .card .btn{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.25)}
+  .card .btn.primary{background:var(--c-acc);color:var(--c-ink);border-color:var(--c-acc)}
+  .card .practice{color:rgba(255,255,255,.75);border-color:rgba(255,255,255,.3)}
+  .ptslabel{font:600 12px Inter;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+  .found{font:600 18px Oswald;margin:10px 0 4px;letter-spacing:.03em}
+  .breakdown{font-size:12.5px;color:#cfd9ee;line-height:1.6;margin:6px 0 10px}
+  .rank{font:600 15px Inter;color:var(--gold);min-height:20px;margin:4px 0 10px}
+  .namerow{display:flex;gap:6px;margin:6px 0 10px}
+  .namerow input{flex:1;font:600 15px Inter;padding:10px 12px;border-radius:8px;border:0}
+  .namerow .btn{flex:0 0 auto;padding:10px 14px}
+  .x{position:absolute;right:12px;top:10px;background:none;border:0;color:#fff;font-size:22px}
+  @keyframes rise{from{transform:translateY(40px) scale(.9);opacity:0}to{transform:none;opacity:1}}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .lb{margin-top:22px;background:var(--navy2);border:1px solid var(--line);border-radius:12px;padding:14px}
+  .lb h3{font:700 20px Oswald;margin:0 0 8px;text-transform:uppercase;letter-spacing:.03em;display:flex;justify-content:space-between;align-items:center}
+  .lb h3 small{font:500 12px Inter;color:var(--muted);text-transform:none;letter-spacing:0}
+  .lbrow{display:grid;grid-template-columns:28px 1fr auto auto;gap:10px;align-items:center;padding:8px 4px;border-top:1px solid rgba(255,255,255,.14);font-size:14px}
+  .lbrow:first-of-type{border-top:0}
+  .lbrow .r{font:700 16px Oswald;color:var(--muted)} .lbrow.me{background:rgba(255,255,255,.1);border-radius:6px}
+  .lbrow .p{font:700 16px Oswald;color:var(--gold)} .lbrow .f{color:var(--muted);font-size:12px}
+  .lbnote{font-size:12.5px;color:var(--muted);line-height:1.5}
+  .foot{text-align:center;font-size:12px;color:var(--muted);margin-top:22px;line-height:1.5}
+  .practice{display:inline-block;margin-top:6px;font-size:12px;color:var(--muted);background:none;border:1px solid var(--line);border-radius:20px;padding:4px 10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">Daily Lineup · <span id="mode">Today's puzzle</span></div>
+    <div class="logo" id="logo"></div>
+    <div class="date" id="date"></div>
+    <div class="team" id="team"></div>
+    <div class="meta" id="meta"></div>
+  </header>
+
+  <div class="board">
+    <div><div class="label">Forwards</div><div class="grid fwd" id="F"></div></div>
+    <div><div class="label" style="text-align:center">Defence</div><div class="grid def" id="D"></div></div>
+    <div><div class="label" style="text-align:center">Goalie</div><div class="grid gol" id="G"></div></div>
+  </div>
+
+  <div class="stats">
+    <div><b id="found">0</b>/<span id="total">19</span> found</div>
+    <div><b id="pts">0</b> pts</div>
+    <div><b id="hints">3</b> hints left</div>
+  </div>
+
+  <form id="form" autocomplete="off">
+    <input id="guess" placeholder="Type a name, hit enter" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="go">
+  </form>
+  <div class="msg" id="msg"></div>
+  <div class="rulesline">Wrong guesses don't count against you · +100 per player · hints −50 · full lineup +250</div>
+  <div class="row">
+    <button class="btn" id="hintBtn" type="button">💡 Hint (jersey #)</button>
+    <button class="btn" id="giveBtn" type="button">Give up</button>
+  </div>
+
+  <div class="end" id="end">
+    <h2 id="endTitle"></h2>
+    <div id="endSub"></div>
+    <pre id="share"></pre>
+    <div class="row">
+      <button class="btn primary" id="copyBtn" type="button">Copy result</button>
+      <button class="btn" id="nextBtn" type="button">Practice another</button>
+    </div>
+  </div>
+
+  <div class="lb" id="lb">
+    <h3>Today's leaderboard <small id="lbday"></small></h3>
+    <div id="lbList"><div class="lbnote">Loading…</div></div>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="card" style="position:relative">
+      <button class="x" id="closeCard" type="button" aria-label="Close">×</button>
+      <div class="tag" id="cTag">Final score</div>
+      <h2 id="cTitle"></h2>
+      <div class="bigpts" id="cPts">0</div>
+      <div class="ptslabel">points</div>
+      <div class="found" id="cFound"></div>
+      <div class="breakdown" id="cBreak"></div>
+      <div class="rank" id="cRank"></div>
+      <div class="namerow" id="nameRow" style="display:none">
+        <input id="nameIn" maxlength="18" placeholder="Your name for the leaderboard">
+        <button class="btn primary" id="nameBtn" type="button">Post</button>
+      </div>
+      <div class="row">
+        <button class="btn primary" id="copyBtn2" type="button">Share score</button>
+        <button class="btn" id="seeBoard" type="button">Leaderboard</button>
+      </div>
+      <button class="practice" id="practice2" type="button" style="margin-top:12px">Play a practice lineup</button>
+    </div>
+  </div>
+
+  <div class="foot">
+    New team &amp; season every day at midnight (2010–2026).<br>
+    Lineup: 100 per player · −50 per hint · +250 for the full lineup.<br>
+    <button class="practice" id="practiceBtn" type="button">Practice mode: random lineup</button><br><br>
+    Fan-made game. Lineups from game box scores; lines from that game's reported pregame lineup. Not affiliated with the NHL or any team.
+  </div>
+</div>
+
+<script>
+// ---------- DATA (who dressed, from box scores) ----------
+// F = 4 lines of [LW, C, RW]; D = 3 pairs of [LD, RD]; G = starter.
+// Lines = that game's reported pregame lineup. Numbers = NHL game roster.
+// Order below IS the daily schedule (day 0 = Nov 19, 2026).
+// logo = NHL logo file for that season, from api-web.nhle.com/v1/score/{date} ("logo" field, without "_light.svg").
+const GAMES = [
+  { team:"Toronto Maple Leafs", date:"2013-11-19", logo:"TOR_19871988-20152016", opp:"vs New York Islanders", note:"Regular season · W 5–2",
+    F:[[["James van Riemsdyk",21],["Peter Holland",24],["Phil Kessel",81]],
+       [["Joffrey Lupul",19],["Trevor Smith",23],["David Clarkson",71]],
+       [["Mason Raymond",12],["Jay McClement",11],["Nikolai Kulemin",41]],
+       [["Frazer McLaren",38],["Jerred Smithson",22],["Colton Orr",28]]],
+    D:[[["Dion Phaneuf",3],["Carl Gunnarsson",36]],[["Jake Gardiner",51],["Cody Franson",4]],[["Morgan Rielly",44],["Paul Ranger",15]]],
+    G:[["Jonathan Bernier",45]] },
+  { team:"St. Louis Blues", date:"2019-06-12", logo:"STL_20082009-20242025", opp:"at Boston Bruins", note:"Stanley Cup Final, Game 7 · W 4–1",
+    F:[[["Jaden Schwartz",17],["Brayden Schenn",10],["Vladimir Tarasenko",91]],
+       [["Zach Sanford",12],["Ryan O'Reilly",90],["David Perron",57]],
+       [["Pat Maroon",7],["Tyler Bozak",21],["Sammy Blais",9]],
+       [["Ivan Barbashev",49],["Oskar Sundqvist",70],["Alexander Steen",20]]],
+    D:[[["Carl Gunnarsson",4],["Alex Pietrangelo",27]],[["Jay Bouwmeester",19],["Colton Parayko",55]],[["Joel Edmundson",6],["Vince Dunn",29]]],
+    G:[["Jordan Binnington",50]] },
+  { team:"Washington Capitals", date:"2018-06-07", logo:"WSH", opp:"at Vegas Golden Knights", note:"Stanley Cup Final, Game 5 · W 4–3",
+    F:[[["Alex Ovechkin",8],["Evgeny Kuznetsov",92],["Tom Wilson",43]],
+       [["Jakub Vrana",13],["Nicklas Backstrom",19],["T.J. Oshie",77]],
+       [["Andre Burakovsky",65],["Lars Eller",20],["Brett Connolly",10]],
+       [["Chandler Stephenson",18],["Jay Beagle",83],["Devante Smith-Pelly",25]]],
+    D:[[["Dmitry Orlov",9],["Matt Niskanen",2]],[["Michal Kempny",6],["John Carlson",74]],[["Brooks Orpik",44],["Christian Djoos",29]]],
+    G:[["Braden Holtby",70]] },
+  { team:"Los Angeles Kings", date:"2014-06-13", logo:"LAK_20112012-20182019", opp:"vs New York Rangers", note:"Stanley Cup Final, Game 5 · W 3–2 (2OT)",
+    F:[[["Marian Gaborik",12],["Anze Kopitar",11],["Dustin Brown",23]],
+       [["Tanner Pearson",70],["Jeff Carter",77],["Tyler Toffoli",73]],
+       [["Dwight King",74],["Jarret Stoll",28],["Justin Williams",14]],
+       [["Kyle Clifford",13],["Mike Richards",10],["Trevor Lewis",22]]],
+    D:[[["Jake Muzzin",6],["Drew Doughty",8]],[["Willie Mitchell",33],["Slava Voynov",26]],[["Alec Martinez",27],["Matt Greene",2]]],
+    G:[["Jonathan Quick",32]] },
+  { team:"Pittsburgh Penguins", date:"2016-06-12", logo:"PIT_20062007-20152016", opp:"at San Jose Sharks", note:"Stanley Cup Final, Game 6 · W 3–1",
+    F:[[["Conor Sheary",43],["Sidney Crosby",87],["Patric Hornqvist",72]],
+       [["Chris Kunitz",14],["Evgeni Malkin",71],["Bryan Rust",17]],
+       [["Carl Hagelin",62],["Nick Bonino",13],["Phil Kessel",81]],
+       [["Tom Kuhnhackl",34],["Matt Cullen",7],["Eric Fehr",16]]],
+    D:[[["Brian Dumoulin",8],["Kris Letang",58]],[["Olli Maatta",3],["Ben Lovejoy",12]],[["Ian Cole",28],["Justin Schultz",4]]],
+    G:[["Matt Murray",30]] },
+  { team:"Boston Bruins", date:"2011-06-15", logo:"BOS_20082009-20222023", opp:"at Vancouver Canucks", note:"Stanley Cup Final, Game 7 · W 4–0",
+    F:[[["Milan Lucic",17],["David Krejci",46],["Rich Peverley",49]],
+       [["Brad Marchand",63],["Patrice Bergeron",37],["Mark Recchi",28]],
+       [["Michael Ryder",73],["Chris Kelly",23],["Tyler Seguin",19]],
+       [["Daniel Paille",20],["Gregory Campbell",11],["Shawn Thornton",22]]],
+    D:[[["Zdeno Chara",33],["Dennis Seidenberg",44]],[["Andrew Ference",21],["Johnny Boychuk",55]],[["Tomas Kaberle",12],["Adam McQuaid",54]]],
+    G:[["Tim Thomas",30]] },
+  { team:"Florida Panthers", date:"2024-06-24", logo:"FLA", opp:"vs Edmonton Oilers", note:"Stanley Cup Final, Game 7 · W 2–1",
+    F:[[["Carter Verhaeghe",23],["Aleksander Barkov",16],["Sam Reinhart",13]],
+       [["Evan Rodrigues",17],["Sam Bennett",9],["Matthew Tkachuk",19]],
+       [["Eetu Luostarinen",27],["Anton Lundell",15],["Vladimir Tarasenko",10]],
+       [["Ryan Lomberg",94],["Kevin Stenlund",82],["Kyle Okposo",8]]],
+    D:[[["Gustav Forsling",42],["Aaron Ekblad",5]],[["Niko Mikkola",77],["Brandon Montour",62]],[["Oliver Ekman-Larsson",91],["Dmitry Kulikov",7]]],
+    G:[["Sergei Bobrovsky",72]] },
+  { team:"Toronto Maple Leafs", date:"2013-05-13", logo:"TOR_19871988-20152016", opp:"at Boston Bruins", note:"Playoffs · Round 1, Game 7 · L 4–5 (OT)",
+    F:[[["James van Riemsdyk",21],["Nazem Kadri",43],["Phil Kessel",81]],
+       [["Jay McClement",11],["Mikhail Grabovski",84],["Nikolai Kulemin",41]],
+       [["Joffrey Lupul",19],["Joe Colborne",32],["Matt Frattin",39]],
+       [["Leo Komarov",47],["Clarke MacArthur",16],["Colton Orr",28]]],
+    D:[[["Dion Phaneuf",3],["Carl Gunnarsson",36]],[["Jake Gardiner",51],["Cody Franson",4]],[["John-Michael Liles",24],["Ryan O'Byrne",23]]],
+    G:[["James Reimer",34]] },
+  // idx 8 = Nov 27, 2026
+  { team:"Seattle Kraken", date:"2021-10-23", logo:"SEA", opp:"vs Vancouver Canucks", note:"Regular season · Kraken home opener · L 2–4",
+    F:[[["Jaden Schwartz",17],["Yanni Gourde",37],["Calle Jarnkrok",19]],
+       [["Jared McCann",16],["Alex Wennberg",21],["Jordan Eberle",7]],
+       [["Joonas Donskoi",72],["Morgan Geekie",67],["Brandon Tanev",13]],
+       [["Nathan Bastian",14],["Riley Sheahan",15],["Mason Appleton",22]]],
+    D:[[["Mark Giordano",5],["Jamie Oleksiak",24]],[["Jeremy Lauzon",55],["Adam Larsson",6]],[["Carson Soucy",28],["Vince Dunn",29]]],
+    G:[["Philipp Grubauer",31]] },
+  // idx 9 = Nov 28, 2026
+  { team:"Dallas Stars", date:"2016-11-15", logo:"DAL_20122013-20202021", opp:"vs New Jersey Devils", note:"Regular season · L 1–2 (OT)",
+    F:[[["Jamie Benn",14],["Radek Faksa",12],["Lauri Korpikoski",38]],
+       [["Antoine Roussel",21],["Tyler Seguin",91],["Patrick Eaves",18]],
+       [["Gemel Smith",46],["Devin Shore",17],["Jason Spezza",90]],
+       [["Curtis McKenzie",11],["Adam Cracknell",27],["Brett Ritchie",25]]],
+    D:[[["Dan Hamhuis",2],["John Klingberg",3]],[["Johnny Oduya",47],["Stephen Johns",28]],[["Patrik Nemeth",15],["Jordie Benn",24]]],
+    G:[["Antti Niemi",31]] },
+  // idx 10 = Nov 29, 2026
+  { team:"Tampa Bay Lightning", date:"2021-07-07", logo:"TBL", opp:"vs Montreal Canadiens", note:"Stanley Cup Final, Game 5 · W 1–0",
+    F:[[["Ondrej Palat",18],["Brayden Point",21],["Nikita Kucherov",86]],
+       [["Tyler Johnson",9],["Anthony Cirelli",71],["Steven Stamkos",91]],
+       [["Barclay Goodrow",19],["Yanni Gourde",37],["Blake Coleman",20]],
+       [["Pat Maroon",14],["Ross Colton",79],["Mathieu Joseph",7]]],
+    D:[[["Victor Hedman",77],["Jan Rutta",44]],[["Ryan McDonagh",27],["Erik Cernak",81]],[["Mikhail Sergachev",98],["David Savard",58]]],
+    G:[["Andrei Vasilevskiy",88]] },
+  // idx 11 = Nov 30, 2026
+  { team:"Winnipeg Jets", date:"2011-10-09", logo:"WPG", opp:"vs Montreal Canadiens", note:"Regular season · Jets' return to Winnipeg · L 1–5",
+    F:[[["Andrew Ladd",16],["Bryan Little",18],["Blake Wheeler",26]],
+       [["Evander Kane",9],["Mark Scheifele",55],["Kyle Wellwood",13]],
+       [["Brett MacLean",25],["Alexander Burmistrov",8],["Nik Antropov",80]],
+       [["Tanner Glass",15],["Jim Slater",19],["Chris Thorburn",22]]],
+    D:[[["Tobias Enstrom",39],["Dustin Byfuglien",33]],[["Mark Stuart",5],["Zach Bogosian",4]],[["Johnny Oduya",29],["Ron Hainsey",6]]],
+    G:[["Ondrej Pavelec",31]] },
+  // idx 12 = Dec 1, 2026
+  { team:"Carolina Hurricanes", date:"2020-01-21", logo:"CAR", opp:"vs Winnipeg Jets", note:"Regular season · W 4–1",
+    F:[[["Nino Niederreiter",21],["Jordan Staal",11],["Andrei Svechnikov",37]],
+       [["Warren Foegele",13],["Sebastian Aho",20],["Teuvo Teravainen",86]],
+       [["Ryan Dzingel",18],["Lucas Wallmark",71],["Martin Necas",88]],
+       [["Brock McGinn",23],["Jordan Martinook",48],["Justin Williams",14]]],
+    D:[[["Jaccob Slavin",74],["Joel Edmundson",6]],[["Jake Gardiner",51],["Brett Pesce",22]],[["Haydn Fleury",4],["Trevor van Riemsdyk",57]]],
+    G:[["Petr Mrazek",34]] },
+  // idx 13 = Dec 2, 2026
+  { team:"Ottawa Senators", date:"2017-05-25", logo:"OTT_20072008-20192020", opp:"at Pittsburgh Penguins", note:"Eastern Conference Final, Game 7 · L 2–3 (2OT)",
+    F:[[["Zack Smith",15],["Jean-Gabriel Pageau",44],["Mark Stone",61]],
+       [["Mike Hoffman",68],["Kyle Turris",7],["Tom Pyatt",10]],
+       [["Clarke MacArthur",16],["Derick Brassard",19],["Bobby Ryan",9]],
+       [["Ryan Dzingel",18],["Chris Kelly",22],["Viktor Stalberg",24]]],
+    D:[[["Marc Methot",3],["Erik Karlsson",65]],[["Dion Phaneuf",2],["Cody Ceci",5]],[["Fredrik Claesson",33],["Chris Wideman",6]]],
+    G:[["Craig Anderson",41]] },
+  // idx 14 = Dec 3, 2026
+  { team:"Utah Hockey Club", date:"2024-10-08", logo:"UTA_20242025-20242025", opp:"vs Chicago Blackhawks", note:"Regular season · Utah's first-ever game · W 5–2",
+    F:[[["Clayton Keller",9],["Barrett Hayton",27],["Nick Schmaltz",8]],
+       [["Jack McBain",22],["Logan Cooley",92],["Dylan Guenther",11]],
+       [["Matias Maccelli",63],["Josh Doan",91],["Lawson Crouse",67]],
+       [["Liam O'Brien",38],["Kevin Stenlund",82],["Alexander Kerfoot",15]]],
+    D:[[["Mikhail Sergachev",98],["Sean Durzi",50]],[["Juuso Valimaki",4],["Michael Kesselring",7]],[["Ian Cole",28],["Vladislav Kolyachonok",52]]],
+    G:[["Connor Ingram",39]] },
+  // idx 15 = Dec 4, 2026
+  { team:"New Jersey Devils", date:"2025-12-30", logo:"NJD", opp:"at Toronto Maple Leafs", note:"Regular season · L 0–4",
+    F:[[["Timo Meier",28],["Nico Hischier",13],["Dawson Mercer",91]],
+       [["Ondrej Palat",18],["Jack Hughes",86],["Jesper Bratt",63]],
+       [["Arseny Gritsyuk",81],["Cody Glass",12],["Connor Brown",16]],
+       [["Paul Cotter",47],["Luke Glendening",14],["Stefan Noesen",11]]],
+    D:[[["Jonas Siegenthaler",71],["Dougie Hamilton",7]],[["Luke Hughes",43],["Brett Pesce",22]],[["Brenden Dillon",5],["Colton White",45]]],
+    G:[["Jacob Markstrom",25]] },
+  // idx 16 = Dec 5, 2026
+  { team:"Colorado Avalanche", date:"2022-06-26", logo:"COL", opp:"at Tampa Bay Lightning", note:"Stanley Cup Final, Game 6 · W 2–1",
+    F:[[["Artturi Lehkonen",62],["Nathan MacKinnon",29],["Mikko Rantanen",96]],
+       [["Gabriel Landeskog",92],["Nazem Kadri",91],["Valeri Nichushkin",13]],
+       [["Alex Newhook",18],["J.T. Compher",37],["Logan O'Connor",25]],
+       [["Darren Helm",43],["Andrew Cogliano",11],["Nico Sturm",78]]],
+    D:[[["Devon Toews",7],["Cale Makar",8]],[["Jack Johnson",3],["Josh Manson",42]],[["Bowen Byram",4],["Erik Johnson",6]]],
+    G:[["Darcy Kuemper",35]] },
+  // idx 17 = Dec 6, 2026
+  { team:"Vegas Golden Knights", date:"2017-10-10", logo:"VGK", opp:"vs Arizona Coyotes", note:"Regular season · first-ever home game · W 5–2",
+    F:[[["Reilly Smith",19],["Jonathan Marchessault",81],["Oscar Lindberg",24]],
+       [["David Perron",57],["Cody Eakin",21],["James Neal",18]],
+       [["William Karlsson",71],["Erik Haula",56],["Brendan Leipsic",13]],
+       [["Tomas Nosek",92],["Pierre-Edouard Bellemare",41],["William Carrier",28]]],
+    D:[[["Brayden McNabb",3],["Deryk Engelland",5]],[["Colin Miller",6],["Jason Garrison",7]],[["Luca Sbisa",47],["Nate Schmidt",88]]],
+    G:[["Marc-Andre Fleury",29]] },
+];
+// Scratches, backups and opponents: a guess closest to one of these is a miss, never an autocorrect
+const DECOYS = ["Tyler Bozak","Tim Gleason","Dave Bolland","Mark Fraser","Jerred Smithson","Nazem Kadri",
+  "Robert Thomas","Robert Bortuzzo","Jake Allen","David Pastrnak","Charlie Coyle","Torey Krug","Tuukka Rask",
+  "Philipp Grubauer","Jonathan Marchessault","William Karlsson","Reilly Smith","Marc-Andre Fleury",
+  "Martin Jones","Robyn Regehr","Henrik Lundqvist","Rick Nash","Martin St. Louis","Derek Stepan",
+  "Joe Thornton","Joe Pavelski","Brent Burns","Logan Couture","Nathan Horton","Daniel Sedin","Henrik Sedin",
+  "Roberto Luongo","Ryan Kesler","Alex Burrows","Nick Cousins","Anthony Stolarz","Connor McDavid","Leon Draisaitl",
+  "Zach Hyman","Evan Bouchard","Stuart Skinner","Corey Perry","Jarome Iginla",
+  "Joey Daccord","Ryan Donato","Will Borgen","Elias Pettersson","Quinn Hughes","J.T. Miller","Bo Horvat","Thatcher Demko","Brock Boeser","Kari Lehtonen","Esa Lindell","Cory Schneider","Kyle Palmieri","Adam Henrique","Travis Zajac","Taylor Hall","Curtis McElhinney","Alex Killorn","Luke Schenn","Carey Price","Nick Suzuki","Cole Caufield","Shea Weber","Brendan Gallagher","Chris Mason","Max Pacioretty","P.K. Subban","Tomas Plekanec","Erik Cole","Brian Gionta","Connor Hellebuyck","Patrik Laine","Kyle Connor","Nikolaj Ehlers","Josh Morrissey","Mike Condon","Chris Neil","Colin White","Tommy Wingels","Jake Guentzel","Trevor Daley","Mark Streit","Scott Wilson","Carter Rowney","Karel Vejmelka","Michael Carcone","Kailer Yamamoto","Connor Bedard","Seth Jones","Tyler Bertuzzi","Nick Foligno","Jake Allen","Dennis Cholowski","Juho Lammikko","John Tavares","Joseph Woll","Mathew Knies","Max Domi","Easton Cowan","Pavel Francouz","Ryan Murray","Kurtis MacDermid","Nicolas Aube-Kubel","Brandon Hagel","Nick Paul","Brian Elliott","Malcolm Subban","Griffin Reinhart","Jon Merrill","Brad Hunt","Antti Raanta","Niklas Hjalmarsson","Anthony Duclair","Christian Dvorak"];
+const ALIASES = { "jvr":"James van Riemsdyk", "nikolay kulemin":"Nikolai Kulemin", "jml":"John-Michael Liles", "grabo":"Mikhail Grabovski",
+  "ovi":"Alex Ovechkin", "ovechkin":"Alex Ovechkin", "kuzy":"Evgeny Kuznetsov", "geno":"Evgeni Malkin", "sid":"Sidney Crosby", "tj oshie":"T.J. Oshie", "oshie":"T.J. Oshie",
+  "ror":"Ryan O'Reilly", "petro":"Alex Pietrangelo", "binner":"Jordan Binnington", "chucky":"Matthew Tkachuk", "bob":"Sergei Bobrovsky", "bobrovsky":"Sergei Bobrovsky",
+  "oel":"Oliver Ekman-Larsson", "kopi":"Anze Kopitar", "bergy":"Patrice Bergeron", "marchy":"Brad Marchand", "looch":"Milan Lucic", "dsp":"Devante Smith-Pelly" };
+
+// Team abbreviation + colours. The logo tries the NHL's logo file first (works once the game is
+// on its own website); if that can't load, a team-colour badge shows instead.
+const TEAMS = {
+  "Anaheim Ducks":["ANA","#F47A38","#000"], "Arizona Coyotes":["ARI","#8C2633","#E2D6B5"], "Atlanta Thrashers":["ATL","#041E42","#5C88DA"],
+  "Boston Bruins":["BOS","#FFB81C","#000"], "Buffalo Sabres":["BUF","#003087","#FFB81C"], "Calgary Flames":["CGY","#C8102E","#F1BE48"],
+  "Carolina Hurricanes":["CAR","#CE1126","#fff"], "Chicago Blackhawks":["CHI","#CF0A2C","#fff"], "Colorado Avalanche":["COL","#6F263D","#fff"],
+  "Columbus Blue Jackets":["CBJ","#002654","#CE1126"], "Dallas Stars":["DAL","#006847","#fff"], "Detroit Red Wings":["DET","#CE1126","#fff"],
+  "Edmonton Oilers":["EDM","#041E42","#FF4C00"], "Florida Panthers":["FLA","#C8102E","#B9975B"], "Los Angeles Kings":["LAK","#111","#A2AAAD"],
+  "Minnesota Wild":["MIN","#154734","#DDCBA4"], "Montreal Canadiens":["MTL","#AF1E2D","#fff"], "Nashville Predators":["NSH","#FFB81C","#041E42"],
+  "New Jersey Devils":["NJD","#CE1126","#000"], "New York Islanders":["NYI","#00539B","#F47D30"], "New York Rangers":["NYR","#0038A8","#fff"],
+  "Ottawa Senators":["OTT","#C52032","#C2912C"], "Philadelphia Flyers":["PHI","#F74902","#000"], "Pittsburgh Penguins":["PIT","#000","#FCB514"],
+  "San Jose Sharks":["SJS","#006D75","#fff"], "Seattle Kraken":["SEA","#001628","#99D9D9"], "St. Louis Blues":["STL","#002F87","#FCB514"],
+  "Tampa Bay Lightning":["TBL","#002868","#fff"], "Toronto Maple Leafs":["TOR","#00205B","#fff"], "Utah Hockey Club":["UTA","#71AFE5","#000"],
+  "Utah Mammoth":["UTA","#71AFE5","#000"], "Vancouver Canucks":["VAN","#00205B","#00843D"], "Vegas Golden Knights":["VGK","#B4975A","#333F42"],
+  "Washington Capitals":["WSH","#C8102E","#041E42"], "Winnipeg Jets":["WPG","#041E42","#AC162C"]
+};
+function showLogo(team, logo){
+  const el=$("logo"); const t=TEAMS[team]||["NHL","#fff","#00205B"];
+  const badge=()=>{ el.innerHTML=""; el.textContent=t[0]; el.style.background=t[1]; el.style.color=t[2]; };
+  badge();
+  const img=new Image(); img.alt=team;
+  img.onload=()=>{ el.textContent=""; el.style.background="#fff"; el.appendChild(img); };
+  // logo = the NHL's file for the logo the team wore that season (e.g. "FLA_19992000-20152016"); falls back to the current one
+  img.onerror=()=>{ if(logo && img.src.indexOf("/"+t[0]+"_light.svg")<0) img.src="https://assets.nhle.com/logos/nhl/svg/"+t[0]+"_light.svg"; };
+  img.src="https://assets.nhle.com/logos/nhl/svg/"+(logo||t[0])+"_light.svg";
+}
+
+// ---------- HELPERS ----------
+const $ = id => document.getElementById(id);
+const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z ]/g,"").replace(/\s+/g," ").trim();
+const last = n => n.split(" ").slice(1).join(" ");
+const short = n => n[0] + ". " + last(n);
+const store = { get(k){ try{return JSON.parse(localStorage.getItem(k))}catch(e){return null} }, set(k,v){ try{localStorage.setItem(k,JSON.stringify(v))}catch(e){} } };
+const fmtDate = iso => new Date(iso+"T12:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+const todayKey = () => { const d=new Date(); return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); };
+const dayIndex = () => { const d=new Date(); const start=new Date(2026,10,19); /* day 0 */ return Math.floor((new Date(d.getFullYear(),d.getMonth(),d.getDate())-start)/864e5); };
+
+const POOL = [...new Set(GAMES.flatMap(g=>[...g.F.flat(),...g.D.flat(),...g.G].map(p=>p[0])).concat(DECOYS))].sort((a,b)=>last(a).localeCompare(last(b)));
+
+// ---------- POINTS ----------
+const PER_PLAYER=100, HINT_COST=50, PERFECT_BONUS=250;
+function points(){ const n=state.found.length, total=all().length, h=3-state.hints;
+  return Math.max(0, n*PER_PLAYER - h*HINT_COST + (n===total?PERFECT_BONUS:0)); }
+
+// ---------- STATE ----------
+let game, state, daily = true, saveKey;
+
+function start(idx, isDaily){
+  daily = isDaily;
+  game = GAMES[((idx % GAMES.length)+GAMES.length)%GAMES.length];
+  saveKey = isDaily ? "lineup-daily-"+todayKey() : null;
+  state = (isDaily && store.get(saveKey)) || { found:[], hinted:[], miss:0, hints:3, over:false, gaveUp:false };
+  $("mode").textContent = isDaily ? "Today's puzzle" : "Practice";
+  $("date").textContent = fmtDate(game.date);
+  $("team").textContent = game.team; showLogo(game.team, game.logo); themePage(game.team);
+  const y=+game.date.slice(0,4), m=+game.date.slice(5,7), sy = m>=9 ? y : y-1;
+  $("meta").textContent = sy+"–"+String(sy+1).slice(2)+" season · " + game.opp + " · " + game.note;
+  $("total").textContent = all().length;
+  $("msg").textContent = ""; $("guess").value = "";
+  render();
+}
+const all = () => [...game.F.flat(), ...game.D.flat(), ...game.G];
+
+function slot(p, label){
+  const s = document.createElement("div"); s.className = "slot";
+  s.dataset.pos = label;
+  if (state.found.includes(p[0])) { s.textContent = short(p[0]); if (p[0]===state.lastFound) s.classList.add("found"); }
+  else if (state.over) { s.textContent = short(p[0]); s.classList.add("missed"); }
+  else if (state.hinted.includes(p[0])) { s.textContent = "#" + p[1]; s.classList.add("hint"); }
+  return s;
+}
+function render(){
+  const F=$("F"), D=$("D"), G=$("G"); F.innerHTML=D.innerHTML=G.innerHTML="";
+  ["LW","C","RW"].forEach(t=>{ const h=document.createElement("div"); h.className="colhead"; h.textContent=t; F.appendChild(h); });
+  game.F.forEach(line=>line.forEach((p,i)=>F.appendChild(slot(p,["LW","C","RW"][i]))));
+  ["LD","RD"].forEach(t=>{ const h=document.createElement("div"); h.className="colhead"; h.textContent=t; D.appendChild(h); });
+  game.D.forEach(pair=>pair.forEach((p,i)=>D.appendChild(slot(p,["LD","RD"][i]))));
+  game.G.forEach(p=>G.appendChild(slot(p,"G")));
+  $("found").textContent = state.found.length;
+  $("pts").textContent = points();
+  $("hints").textContent = state.hints;
+  $("hintBtn").disabled = state.over || state.hints<=0;
+  $("giveBtn").disabled = state.over;
+  $("guess").disabled = state.over;
+  showEnd();
+  if (saveKey) store.set(saveKey, state);
+}
+
+// Levenshtein distance for typo tolerance
+function lev(a,b){ const m=a.length,n=b.length; if(!m) return n; if(!n) return m;
+  let prev=Array.from({length:n+1},(_,j)=>j);
+  for(let i=1;i<=m;i++){ const cur=[i]; for(let j=1;j<=n;j++) cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1)); prev=cur; }
+  return prev[n]; }
+const allowed = len => len<=3 ? 0 : len<=5 ? 1 : len<=8 ? 2 : 3;
+// best score of a guess vs a name: compare against full name and last name
+function score(q,name){ const full=norm(name), ln=norm(last(name)); return Math.min(lev(q,full), lev(q,ln)); }
+
+function guess(raw){
+  if (state.over) return;
+  let q = norm(raw); if (!q) return;
+  if (ALIASES[q]) q = norm(ALIASES[q]);
+  const roster = all();
+  $("guess").value = "";
+  // closest name in the whole pool (roster + other players)
+  const everyone = [...new Set(POOL.concat(roster.map(p=>p[0])))];
+  let best=null, bestD=99;
+  for (const n of everyone){ const d=score(q,n); if (d<bestD){ bestD=d; best=n; } }
+  // last name shared by 2+ roster players needs the full name
+  const hit = (best && bestD<=allowed(q.length)) ? roster.find(p=>p[0]===best) : null;
+  if (hit){
+    if (state.found.includes(hit[0])) return say(hit[0]+" is already on the board.","bad");
+    state.found.push(hit[0]); state.lastFound = hit[0];
+    say("✓ "+hit[0]+" · "+where(hit[0]),"good");
+    if (state.found.length===roster.length) state.over = true;
+  } else {
+    state.miss++;
+    say("✗ "+raw.trim()+" didn't dress. No penalty, keep guessing!","bad");
+  }
+  render();
+}
+function where(name){
+  const ord=["1st","2nd","3rd","4th"];
+  for (let l=0;l<game.F.length;l++){ const i=game.F[l].findIndex(p=>p[0]===name); if(i>=0) return ord[l]+" line "+["LW","C","RW"][i]; }
+  for (let l=0;l<game.D.length;l++){ const i=game.D[l].findIndex(p=>p[0]===name); if(i>=0) return ord[l]+" pair "+["LD","RD"][i]; }
+  return "starting G";
+}
+function say(t,c){ const m=$("msg"); m.textContent=t; m.className="msg "+c; }
+
+function hint(){
+  const left = all().filter(p=>!state.found.includes(p[0]) && !state.hinted.includes(p[0]));
+  if (!left.length || state.hints<=0) return;
+  const p = left[Math.floor(Math.random()*left.length)];
+  state.hinted.push(p[0]); state.hints--;
+  say("💡 Someone wearing #"+p[1]+" played","good");
+  render();
+}
+
+// Score card in team colours: darker colour = background, brighter = accent (white if too dark to read)
+function hexRgb(h){ h=h.replace("#",""); if(h.length===3) h=h.split("").map(c=>c+c).join(""); const n=parseInt(h,16); return [n>>16&255,n>>8&255,n&255]; }
+function lum(h){ return hexRgb(h).map(v=>{v/=255; return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4);}).reduce((a,v,i)=>a+v*[.2126,.7152,.0722][i],0); }
+function shade(h,k){ return "#"+hexRgb(h).map(v=>Math.round(k<0?v*(1+k):v+(255-v)*k).toString(16).padStart(2,"0")).join(""); }
+// Whole page in the day's team colours: darker team colour = background, other colour = accent
+function themePage(team){
+  const t=TEAMS[team]||["","#00205B","#FFD23F"]; const [a,b]=[t[1],t[2]];
+  let bg = lum(a)<=lum(b)?a:b, other = bg===a?b:a, acc = other;
+  if (lum(bg)>0.18) bg = shade(bg,-0.55);            // keep it dark enough for white text
+  if (lum(acc)<0.2) acc = "#ffffff";                // accent must stand out on the background
+  const panel = lum(bg)<0.02 ? shade(bg,0.13) : shade(bg,0.1);
+  const r=document.documentElement.style;
+  r.setProperty("--navy", bg);
+  r.setProperty("--navy2", panel);
+  r.setProperty("--line", other.toLowerCase()===bg.toLowerCase() ? shade(bg,0.3) : other);
+  r.setProperty("--gold", acc);
+  r.setProperty("--goldInk", lum(acc)>0.4 ? (lum(bg)<0.05 ? "#000000" : bg) : "#ffffff");
+  let m=document.querySelector('meta[name="theme-color"]');
+  if(!m){ m=document.createElement("meta"); m.name="theme-color"; document.head.appendChild(m); }
+  m.content=bg;
+}
+function themeCard(team){
+  const t=TEAMS[team]||["","#00205B","#FFD23F"]; let [a,b]=[t[1],t[2]];
+  let bg = lum(a)<=lum(b)?a:b, acc = bg===a?b:a;
+  if (lum(bg)>0.18) bg = shade(bg,-0.55);            // keep the background dark enough for white text
+  const border = acc;                               // keep the team's second colour as the frame (e.g. Capitals red)
+  if (lum(acc)<0.2) acc = "#ffffff";                // accent must pop against the background
+  const card=document.querySelector(".card"); if(!card||!card.style) return;
+  card.style.setProperty("--c-bg", shade(bg,-0.25));
+  card.style.setProperty("--c-bg2", lum(bg)<0.02 ? shade(bg,0.12) : bg);
+  card.style.setProperty("--c-acc", acc);
+  card.style.setProperty("--c-border", border);
+  card.style.setProperty("--c-ink", lum(acc)>0.5 ? shade(bg,-0.3) : "#ffffff");
+}
+var mode, shareMode; let shownFor=null;
+function shareText(){
+  const total=all().length, n=state.found.length;
+  const sq = p => state.found.includes(p[0]) ? "🟦" : "⬜";
+  return "Daily Lineup 🏒 "+fmtDate(game.date)+"\n"+game.team+"\n"+
+    game.F.map(l=>l.map(sq).join("")).join("\n")+"\n "+game.D.map(l=>l.map(sq).join("")).join("\n ")+"\n  "+game.G.map(sq).join("")+"\n"+
+    n+"/"+total+" · "+points()+" pts\ndailylineup.ca";
+}
+function showEnd(){
+  if (!state.over){ $("overlay").classList.remove("show"); return; }
+  const key=(daily?"d":"p")+game.date+game.team;
+  if (shownFor===key) return; shownFor=key;
+  const total=all().length, n=state.found.length, pts=points(), h=3-state.hints;
+  $("cTag").textContent = daily ? "Today's final" : "Practice final";
+  $("cTitle").textContent = n===total ? "Full lineup! 🚨" : n>=15 ? "Solid recall" : n>=10 ? "Not bad" : "Rough night";
+  $("cFound").textContent = n+" / "+total+" players";
+  $("cBreak").innerHTML = n+" × 100 = "+(n*100)+(h?"<br>"+h+" hint"+(h>1?"s":"")+" −"+(h*HINT_COST):"")+(n===total?"<br>Full lineup +"+PERFECT_BONUS:"");
+  $("cRank").textContent = "";
+  $("nameRow").style.display="none";
+  themeCard(game.team);
+  $("overlay").classList.add("show");
+  // count-up animation
+  const el=$("cPts"), t0=performance.now(), dur=1100;
+  (function tick(t){ const k=Math.min(1,(t-t0)/dur); el.textContent=Math.round(pts*(1-Math.pow(1-k,3))); if(k<1) requestAnimationFrame(tick); })(t0);
+  shareMode="lineup";
+  if (daily) submitScore("lineup");
+}
+$("closeCard").onclick=()=>$("overlay").classList.remove("show");
+$("seeBoard").onclick=()=>{ renderBoard(); $("overlay").classList.remove("show"); $("lb").scrollIntoView({behavior:"smooth"}); };
+$("practice2").onclick=()=>{ $("overlay").classList.remove("show"); practice(); };
+$("copyBtn2").onclick = async ()=>{ try{ await navigator.clipboard.writeText(shareText()); $("copyBtn2").textContent="Copied ✓"; }catch(e){ $("copyBtn2").textContent="Couldn't copy"; } setTimeout(()=>$("copyBtn2").textContent="Share score",1800); };
+
+// ---------- LEADERBOARD (Supabase table "scores": one row per player per day) ----------
+// Paste your two Supabase values here (Project Settings → API). Both are safe to be public.
+const SUPABASE_URL = "https://dwsfdoayfjgmmrkwtspi.supabase.co";
+const SUPABASE_KEY = "sb_publishable_PeKxZ8zTiEOQhh9fAlvy_w_ZAtnOXE5";
+const LB_READY = /^https:\/\//.test(SUPABASE_URL);
+let BOARD=[];
+const dayStr = () => { const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); };
+const getName = () => { try{ return localStorage.getItem("lineup-name")||""; }catch(e){ return ""; } };
+const setName = n => { try{ localStorage.setItem("lineup-name",n); }catch(e){} };
+function newId(){ if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return "10000000-1000-4000-8000-100000000000".replace(/[018]/g,c=>(c^(Math.random()*256&255)&15>>c/4).toString(16)); }
+const UID = (()=>{ try{ let id=localStorage.getItem("lineup-player"); if(!id){ id=newId(); localStorage.setItem("lineup-player",id); } return id; }catch(e){ return newId(); } })();
+async function api(path, opts){
+  opts = opts || {};
+  const r = await fetch(SUPABASE_URL+"/rest/v1/"+path, Object.assign({}, opts,
+    { headers: Object.assign({ apikey:SUPABASE_KEY, "Content-Type":"application/json" }, opts.headers||{}) }));
+  if (!r.ok) throw new Error("HTTP "+r.status);
+  return opts.method ? null : r.json();
+}
+async function loadBoard(){
+  if (!LB_READY){ renderBoard(); return; }
+  try{
+    BOARD = await api("scores?select=player_id,name,pts,found&day=eq."+dayStr()+"&order=pts.desc,found.desc,created_at.asc&limit=25");
+    renderBoard();
+  }catch(e){ if(!BOARD.length) $("lbList").innerHTML='<div class="lbnote">Leaderboard unavailable right now.</div>'; }
+}
+function renderBoard(){
+  const box=$("lbList"); $("lbday").textContent=fmtDate(dayStr());
+  if (!LB_READY){ box.innerHTML='<div class="lbnote">Leaderboard not connected yet.</div>'; return; }
+  box.innerHTML="";
+  if (!BOARD.length){ box.innerHTML='<div class="lbnote">No scores yet today. Be the first.</div>'; return; }
+  BOARD.forEach((r,i)=>{ const row=document.createElement("div"); row.className="lbrow"+(r.player_id===UID?" me":"");
+    const c=[["r",(i<3?["🥇","🥈","🥉"][i]:i+1)],["n",String(r.name).slice(0,18)],["f",r.found+"/19"],["p",r.pts]];
+    c.forEach(([k,t])=>{ const e=document.createElement("div"); e.className=k; e.textContent=t; row.appendChild(e); }); box.appendChild(row); });
+  if ($("overlay").classList.contains("show")){ const i=BOARD.findIndex(r=>r.player_id===UID); if(i>=0) $("cRank").textContent="You're #"+(i+1)+" today"; }
+}
+async function submitScore(){
+  if (!LB_READY) return;
+  const name=getName();
+  if (!name){ $("nameRow").style.display="flex"; $("nameIn").focus(); return; }
+  try{
+    // first finish of the day counts; a second post for the same day is ignored
+    await api("scores?on_conflict=player_id,day", { method:"POST",
+      headers:{ Prefer:"resolution=ignore-duplicates,return=minimal" },
+      body: JSON.stringify({ player_id:UID, name, day:dayStr(), pts:points(), found:state.found.length }) });
+    $("cRank").textContent="Posted ✓";
+    loadBoard();
+  }catch(e){ $("cRank").textContent="Couldn't post right now"; }
+}
+$("nameBtn").onclick=()=>{ const n=$("nameIn").value.trim().replace(/\s+/g," ").slice(0,18); if(!n) return; setName(n); $("nameRow").style.display="none"; submitScore(); };
+$("nameIn").addEventListener("keydown",e=>{ if(e.key==="Enter") $("nameBtn").click(); });
+loadBoard(); setInterval(loadBoard, 30000);
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden) loadBoard(); });
+
+$("form").addEventListener("submit", e=>{ e.preventDefault(); guess($("guess").value); });
+$("hintBtn").onclick = hint;
+$("giveBtn").onclick = ()=>{ state.over=true; state.gaveUp=true; render(); };
+$("copyBtn").onclick = async ()=>{ try{ await navigator.clipboard.writeText(shareText()); $("copyBtn").textContent="Copied ✓"; }catch(e){ $("copyBtn").textContent="Long-press the box to copy"; } setTimeout(()=>$("copyBtn").textContent="Copy result",1800); };
+let practiceIdx = Math.floor(Math.random()*GAMES.length);
+const practice = ()=>{ practiceIdx=(practiceIdx+1)%GAMES.length; start(practiceIdx,false); window.scrollTo({top:0,behavior:"smooth"}); };
+$("nextBtn").onclick = practice; $("practiceBtn").onclick = practice;
+
+
+
+start(dayIndex(), true);
+</script>
+</body>
+</html>
