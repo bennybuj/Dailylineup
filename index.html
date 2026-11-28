@@ -27,7 +27,7 @@
   .logo img{width:100%;height:100%;object-fit:contain;background:#fff;padding:10px}
   .date{font:700 clamp(34px,9vw,52px)/1 Oswald;letter-spacing:.02em;margin:8px 0 2px;text-transform:uppercase}
   .team{font:600 clamp(22px,6vw,30px)/1.1 Oswald;letter-spacing:.04em;text-transform:uppercase;color:var(--gold)}
-  .meta{font-size:13px;color:var(--muted);margin-top:6px}
+  .meta{font-size:16px;line-height:1.4;color:rgba(255,255,255,.85);margin-top:8px}
   .rulesline{text-align:center;font-size:13px;color:rgba(255,255,255,.8);margin:2px 0 4px}
   .rules{background:#fff;color:var(--navy);border-radius:12px;padding:14px 14px 10px;margin:16px 0 4px;box-shadow:0 4px 0 var(--gold)}
   .rtitle{font:700 22px/1 Oswald;text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px}
@@ -170,7 +170,7 @@
   </div>
 
   <div class="foot">
-    New team &amp; season every day at midnight (2010–2026).<br>
+    New team &amp; game every day at midnight (2010–2026) · Mondays: international special 🌍<br>Practice mode is unlimited and doesn't count on the leaderboard.<br>
     Lineup: 100 per player · −50 per hint · +250 for the full lineup.<br>
     <button class="practice" id="practiceBtn" type="button">Practice mode: random lineup</button><br><br>
     Fan-made game. Lineups from game box scores; lines from that game's reported pregame lineup. Not affiliated with the NHL or any team.
@@ -320,6 +320,90 @@ const GAMES = [
        [["Tomas Nosek",92],["Pierre-Edouard Bellemare",41],["William Carrier",28]]],
     D:[[["Brayden McNabb",3],["Deryk Engelland",5]],[["Colin Miller",6],["Jason Garrison",7]],[["Luca Sbisa",47],["Nate Schmidt",88]]],
     G:[["Marc-Andre Fleury",29]] },
+  { team:"Edmonton Oilers", date:"2022-05-26", logo:"EDM_20172018-20212022", opp:"at Calgary Flames", note:"Playoffs · Round 2, Game 5 · W 5–4 (OT)",
+    F:[[["Evander Kane",91],["Connor McDavid",97],["Leon Draisaitl",29]],
+       [["Zach Hyman",18],["Ryan Nugent-Hopkins",93],["Jesse Puljujarvi",13]],
+       [["Warren Foegele",37],["Ryan McLeod",71],["Kailer Yamamoto",56]],
+       [["Josh Archibald",15],["Derek Ryan",10],["Zack Kassian",44]]],
+    D:[[["Darnell Nurse",25],["Cody Ceci",5]],[["Duncan Keith",2],["Evan Bouchard",75]],[["Brett Kulak",27],["Tyson Barrie",22]]],
+    G:[["Mike Smith",41]] },
+  { team:"Detroit Red Wings", date:"2017-04-09", logo:"DET", opp:"vs New Jersey Devils", note:"Regular season · Last game at Joe Louis Arena · W 4–1",
+    F:[[["Tomas Tatar",21],["Henrik Zetterberg",40],["Gustav Nyquist",14]],
+       [["Matt Lorito",22],["Dylan Larkin",71],["Justin Abdelkader",8]],
+       [["Darren Helm",43],["Frans Nielsen",51],["Riley Sheahan",15]],
+       [["Tomas Nosek",83],["Ben Street",46],["Drew Miller",20]]],
+    D:[[["Danny DeKeyser",65],["Nick Jensen",3]],[["Mike Green",25],["Niklas Kronwall",55]],[["Robbie Russo",18],["Xavier Ouellet",61]]],
+    G:[["Jimmy Howard",35]] },
+  { team:"New York Rangers", date:"2023-05-01", logo:"NYR", opp:"at New Jersey Devils", note:"Playoffs · Round 1, Game 7 · L 0–4",
+    F:[[["Chris Kreider",20],["Mika Zibanejad",93],["Vladimir Tarasenko",91]],
+       [["Alexis Lafreniere",13],["Vincent Trocheck",16],["Patrick Kane",88]],
+       [["Artemi Panarin",10],["Filip Chytil",72],["Kaapo Kakko",24]],
+       [["Jimmy Vesey",26],["Barclay Goodrow",21],["Tyler Motte",14]]],
+    D:[[["Ryan Lindgren",55],["Adam Fox",23]],[["K'Andre Miller",79],["Jacob Trouba",8]],[["Niko Mikkola",77],["Braden Schneider",4]]],
+    G:[["Igor Shesterkin",31]] },
+  { team:"Columbus Blue Jackets", date:"2019-04-16", logo:"CBJ", opp:"vs Tampa Bay Lightning", note:"Playoffs · Round 1, Game 4 · W 7–3 (sweep)",
+    F:[[["Artemi Panarin",9],["Pierre-Luc Dubois",18],["Cam Atkinson",13]],
+       [["Ryan Dzingel",19],["Matt Duchene",95],["Josh Anderson",77]],
+       [["Alexandre Texier",42],["Nick Foligno",71],["Oliver Bjorkstrand",28]],
+       [["Brandon Dubinsky",17],["Boone Jenner",38],["Riley Nash",20]]],
+    D:[[["Zach Werenski",8],["Seth Jones",3]],[["Scott Harrington",4],["David Savard",58]],[["Adam Clendening",6],["Dean Kukan",14]]],
+    G:[["Sergei Bobrovsky",72]] },
+];
+// Monday specials: international games. Mondays from Nov 30, 2026 take the next special in order;
+// other days keep walking through GAMES (so no daily puzzle is skipped). Once specials run out, Mondays get a regular puzzle.
+const SPECIALS = [
+  { team:"United States", date:"2025-02-15", logo:"ntl/svg/USA_20242025-20242025", event:"2025 4 Nations Face-Off", opp:"at Canada", note:"Round robin · W 3–1",
+    F:[[["Brady Tkachuk",7],["Jack Eichel",9],["Matthew Tkachuk",19]],
+       [["Jake Guentzel",59],["Auston Matthews",34],["Jack Hughes",86]],
+       [["J.T. Miller",10],["Dylan Larkin",21],["Matt Boldy",12]],
+       [["Brock Nelson",29],["Vincent Trocheck",16],["Kyle Connor",81]]],
+    D:[[["Zach Werenski",8],["Charlie McAvoy",25]],[["Noah Hanifin",15],["Adam Fox",23]],[["Jaccob Slavin",74],["Brock Faber",14]]],
+    G:[["Connor Hellebuyck",37]] },
+  { team:"Sweden", date:"2025-02-12", logo:"ntl/svg/SWE_20242025-20242025", event:"2025 4 Nations Face-Off", opp:"vs Canada", note:"Round robin · L 3–4 (OT)",
+    F:[[["William Nylander",88],["Mika Zibanejad",93],["Rickard Rakell",67]],
+       [["Filip Forsberg",9],["Elias Pettersson",40],["Adrian Kempe",10]],
+       [["Jesper Bratt",63],["Joel Eriksson Ek",20],["Lucas Raymond",23]],
+       [["Gustav Nyquist",12],["Elias Lindholm",28],["Viktor Arvidsson",33]]],
+    D:[[["Victor Hedman",77],["Jonas Brodin",25]],[["Mattias Ekholm",14],["Erik Karlsson",65]],[["Rasmus Dahlin",26],["Gustav Forsling",42]]],
+    G:[["Filip Gustavsson",32]] },
+  { team:"Canada", date:"2025-02-20", logo:"ntl/svg/CAN_20242025-20242025", event:"2025 4 Nations Face-Off", opp:"at United States", note:"Final · W 3–2 (OT)",
+    F:[[["Brayden Point",21],["Connor McDavid",97],["Mark Stone",61]],
+       [["Sidney Crosby",87],["Nathan MacKinnon",29],["Sam Reinhart",13]],
+       [["Brandon Hagel",38],["Anthony Cirelli",71],["Mitch Marner",16]],
+       [["Brad Marchand",63],["Sam Bennett",9],["Seth Jarvis",24]]],
+    D:[[["Devon Toews",5],["Cale Makar",8]],[["Travis Sanheim",6],["Colton Parayko",55]],[["Thomas Harley",48],["Drew Doughty",89]]],
+    G:[["Jordan Binnington",50]] },
+  { team:"United States", date:"2026-02-22", flag:"🇺🇸", event:"2026 Winter Olympics", opp:"vs Canada", note:"Gold medal game · W 2–1 (OT)",
+    F:[[["Brady Tkachuk",7],["Jack Eichel",9],["Matthew Tkachuk",19]],
+       [["Jake Guentzel",59],["Auston Matthews",34],["Matt Boldy",12]],
+       [["Jack Hughes",86],["Dylan Larkin",21],["Tage Thompson",72]],
+       [["J.T. Miller",10],["Brock Nelson",29],["Vincent Trocheck",16]]],
+    D:[[["Quinn Hughes",43],["Charlie McAvoy",25]],[["Jaccob Slavin",74],["Brock Faber",14]],[["Zach Werenski",8],["Jake Sanderson",85]]],
+    G:[["Connor Hellebuyck",37]], extra:["Clayton Keller","Noah Hanifin"] },
+];
+// Practice-only lineups (never the daily puzzle). Practice also cycles through every past daily/special puzzle.
+const PRACTICE = [
+  { team:"Tampa Bay Lightning", date:"2019-04-16", logo:"TBL", opp:"at Columbus Blue Jackets", note:"Playoffs · Round 1, Game 4 · L 3–7",
+    F:[[["Steven Stamkos",91],["Anthony Cirelli",71],["Nikita Kucherov",86]],
+       [["Ondrej Palat",18],["Brayden Point",21],["Tyler Johnson",9]],
+       [["Mathieu Joseph",7],["Cedric Paquette",13],["J.T. Miller",10]],
+       [["Ryan Callahan",24],["Yanni Gourde",37],["Alex Killorn",17]]],
+    D:[[["Ryan McDonagh",27],["Erik Cernak",81]],[["Mikhail Sergachev",98],["Dan Girardi",5]],[["Braydon Coburn",55],["Jan Rutta",44]]],
+    G:[["Andrei Vasilevskiy",88]] },
+  { team:"Montreal Canadiens", date:"2021-07-07", logo:"MTL", opp:"at Tampa Bay Lightning", note:"Stanley Cup Final, Game 5 · L 0–1",
+    F:[[["Tyler Toffoli",73],["Phillip Danault",24],["Brendan Gallagher",11]],
+       [["Cole Caufield",22],["Nick Suzuki",14],["Josh Anderson",17]],
+       [["Paul Byron",41],["Jake Evans",71],["Artturi Lehkonen",62]],
+       [["Joel Armia",40],["Eric Staal",21],["Corey Perry",94]]],
+    D:[[["Ben Chiarot",8],["Shea Weber",6]],[["Joel Edmundson",44],["Jeff Petry",26]],[["Alexander Romanov",27],["Brett Kulak",77]]],
+    G:[["Carey Price",31]] },
+  { team:"Chicago Blackhawks", date:"2024-10-08", logo:"CHI", opp:"at Utah Hockey Club", note:"Regular season · Season opener · L 2–5",
+    F:[[["Ilya Mikheyev",95],["Connor Bedard",98],["Teuvo Teravainen",86]],
+       [["Taylor Hall",71],["Philipp Kurashev",23],["Tyler Bertuzzi",59]],
+       [["Nick Foligno",17],["Jason Dickinson",16],["Joey Anderson",22]],
+       [["Craig Smith",15],["Ryan Donato",8],["Pat Maroon",77]]],
+    D:[[["Alec Martinez",25],["Seth Jones",4]],[["Alex Vlasic",72],["TJ Brodie",78]],[["Nolan Allan",42],["Connor Murphy",5]]],
+    G:[["Petr Mrazek",34]] },
 ];
 // Scratches, backups and opponents: a guess closest to one of these is a miss, never an autocorrect
 const DECOYS = ["Tyler Bozak","Tim Gleason","Dave Bolland","Mark Fraser","Jerred Smithson","Nazem Kadri",
@@ -329,7 +413,8 @@ const DECOYS = ["Tyler Bozak","Tim Gleason","Dave Bolland","Mark Fraser","Jerred
   "Joe Thornton","Joe Pavelski","Brent Burns","Logan Couture","Nathan Horton","Daniel Sedin","Henrik Sedin",
   "Roberto Luongo","Ryan Kesler","Alex Burrows","Nick Cousins","Anthony Stolarz","Connor McDavid","Leon Draisaitl",
   "Zach Hyman","Evan Bouchard","Stuart Skinner","Corey Perry","Jarome Iginla",
-  "Joey Daccord","Ryan Donato","Will Borgen","Elias Pettersson","Quinn Hughes","J.T. Miller","Bo Horvat","Thatcher Demko","Brock Boeser","Kari Lehtonen","Esa Lindell","Cory Schneider","Kyle Palmieri","Adam Henrique","Travis Zajac","Taylor Hall","Curtis McElhinney","Alex Killorn","Luke Schenn","Carey Price","Nick Suzuki","Cole Caufield","Shea Weber","Brendan Gallagher","Chris Mason","Max Pacioretty","P.K. Subban","Tomas Plekanec","Erik Cole","Brian Gionta","Connor Hellebuyck","Patrik Laine","Kyle Connor","Nikolaj Ehlers","Josh Morrissey","Mike Condon","Chris Neil","Colin White","Tommy Wingels","Jake Guentzel","Trevor Daley","Mark Streit","Scott Wilson","Carter Rowney","Karel Vejmelka","Michael Carcone","Kailer Yamamoto","Connor Bedard","Seth Jones","Tyler Bertuzzi","Nick Foligno","Jake Allen","Dennis Cholowski","Juho Lammikko","John Tavares","Joseph Woll","Mathew Knies","Max Domi","Easton Cowan","Pavel Francouz","Ryan Murray","Kurtis MacDermid","Nicolas Aube-Kubel","Brandon Hagel","Nick Paul","Brian Elliott","Malcolm Subban","Griffin Reinhart","Jon Merrill","Brad Hunt","Antti Raanta","Niklas Hjalmarsson","Anthony Duclair","Christian Dvorak"];
+  "Joey Daccord","Ryan Donato","Will Borgen","Elias Pettersson","Quinn Hughes","J.T. Miller","Bo Horvat","Thatcher Demko","Brock Boeser","Kari Lehtonen","Esa Lindell","Cory Schneider","Kyle Palmieri","Adam Henrique","Travis Zajac","Taylor Hall","Curtis McElhinney","Alex Killorn","Luke Schenn","Carey Price","Nick Suzuki","Cole Caufield","Shea Weber","Brendan Gallagher","Chris Mason","Max Pacioretty","P.K. Subban","Tomas Plekanec","Erik Cole","Brian Gionta","Connor Hellebuyck","Patrik Laine","Kyle Connor","Nikolaj Ehlers","Josh Morrissey","Mike Condon","Chris Neil","Colin White","Tommy Wingels","Jake Guentzel","Trevor Daley","Mark Streit","Scott Wilson","Carter Rowney","Karel Vejmelka","Michael Carcone","Kailer Yamamoto","Connor Bedard","Seth Jones","Tyler Bertuzzi","Nick Foligno","Jake Allen","Dennis Cholowski","Juho Lammikko","John Tavares","Joseph Woll","Mathew Knies","Max Domi","Easton Cowan","Pavel Francouz","Ryan Murray","Kurtis MacDermid","Nicolas Aube-Kubel","Brandon Hagel","Nick Paul","Brian Elliott","Malcolm Subban","Griffin Reinhart","Jon Merrill","Brad Hunt","Antti Raanta","Niklas Hjalmarsson","Anthony Duclair","Christian Dvorak",
+  "Mikko Koskinen","Kris Russell","Philip Broberg","Johnny Gaudreau","Andrew Mangiapane","Mikael Backlund","Anthony Mantha","Andreas Athanasiou","Jaroslav Halak","Ben Harpur","Libor Hajek","Jonny Brodzinski","Akira Schmid","Vitek Vanecek","Joonas Korpisalo","Alexander Wennberg","Keith Kinkaid","Vladislav Gavrikov","Markus Nutivaara","Jake Oettinger","Jeremy Swayman","Linus Ullmark","Leo Carlsson","Rasmus Andersson","Samuel Ersson","Shea Theodore","Travis Konecny","Adin Hill","Sam Montembeault","Macklin Celebrini","Logan Thompson","Louis Domingue","Anton Stralman","Adam Erne","Jesperi Kotkaniemi","Erik Gustafsson","Arvid Soderblom","Lukas Reichel","Isaak Phillips"];
 const ALIASES = { "jvr":"James van Riemsdyk", "nikolay kulemin":"Nikolai Kulemin", "jml":"John-Michael Liles", "grabo":"Mikhail Grabovski",
   "ovi":"Alex Ovechkin", "ovechkin":"Alex Ovechkin", "kuzy":"Evgeny Kuznetsov", "geno":"Evgeni Malkin", "sid":"Sidney Crosby", "tj oshie":"T.J. Oshie", "oshie":"T.J. Oshie",
   "ror":"Ryan O'Reilly", "petro":"Alex Pietrangelo", "binner":"Jordan Binnington", "chucky":"Matthew Tkachuk", "bob":"Sergei Bobrovsky", "bobrovsky":"Sergei Bobrovsky",
@@ -349,17 +434,20 @@ const TEAMS = {
   "San Jose Sharks":["SJS","#006D75","#fff"], "Seattle Kraken":["SEA","#001628","#99D9D9"], "St. Louis Blues":["STL","#002F87","#FCB514"],
   "Tampa Bay Lightning":["TBL","#002868","#fff"], "Toronto Maple Leafs":["TOR","#00205B","#fff"], "Utah Hockey Club":["UTA","#71AFE5","#000"],
   "Utah Mammoth":["UTA","#71AFE5","#000"], "Vancouver Canucks":["VAN","#00205B","#00843D"], "Vegas Golden Knights":["VGK","#B4975A","#333F42"],
-  "Washington Capitals":["WSH","#C8102E","#041E42"], "Winnipeg Jets":["WPG","#041E42","#AC162C"]
+  "Washington Capitals":["WSH","#C8102E","#041E42"], "Winnipeg Jets":["WPG","#041E42","#AC162C"],
+  "United States":["USA","#041E42","#BF0D3E"], "Canada":["CAN","#D80621","#FFFFFF"], "Sweden":["SWE","#004B87","#FECC02"]
 };
-function showLogo(team, logo){
-  const el=$("logo"); const t=TEAMS[team]||["NHL","#fff","#00205B"];
-  const badge=()=>{ el.innerHTML=""; el.textContent=t[0]; el.style.background=t[1]; el.style.color=t[2]; };
-  badge();
-  const img=new Image(); img.alt=team;
-  img.onload=()=>{ el.textContent=""; el.style.background="#fff"; el.appendChild(img); };
-  // logo = the NHL's file for the logo the team wore that season (e.g. "FLA_19992000-20152016"); falls back to the current one
-  img.onerror=()=>{ if(logo && img.src.indexOf("/"+t[0]+"_light.svg")<0) img.src="https://assets.nhle.com/logos/nhl/svg/"+t[0]+"_light.svg"; };
-  img.src="https://assets.nhle.com/logos/nhl/svg/"+(logo||t[0])+"_light.svg";
+let logoTok=0;
+function showLogo(team, logo, flag){
+  const el=$("logo"), t=TEAMS[team]||["NHL","#fff","#00205B"], tok=++logoTok;
+  el.innerHTML=""; el.style.fontSize=""; el.textContent=t[0]; el.style.background=t[1]; el.style.color=t[2];
+  if (flag){ el.textContent=flag; el.style.background="#fff"; el.style.fontSize="48px"; return; }
+  // logo = the NHL's file for the logo the team wore that season (e.g. "FLA_19992000-20152016", or "ntl/svg/CAN_20242025-20242025")
+  const base="https://assets.nhle.com/logos/", own = !!logo && logo.indexOf("/")>=0;
+  const img=new Image(); img.alt=team; img.referrerPolicy="no-referrer"; img.decoding="async";
+  img.onload=()=>{ if(tok!==logoTok) return; el.textContent=""; el.style.background="#fff"; el.appendChild(img); };
+  img.onerror=()=>{ if(tok!==logoTok) return; if(logo && !own && img.src.indexOf("/"+t[0]+"_light.svg")<0) img.src=base+"nhl/svg/"+t[0]+"_light.svg"; };
+  img.src = own ? base+logo+"_light.svg" : base+"nhl/svg/"+(logo||t[0])+"_light.svg";
 }
 
 // ---------- HELPERS ----------
@@ -371,8 +459,25 @@ const store = { get(k){ try{return JSON.parse(localStorage.getItem(k))}catch(e){
 const fmtDate = iso => new Date(iso+"T12:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
 const todayKey = () => { const d=new Date(); return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); };
 const dayIndex = () => { const d=new Date(); const start=new Date(2026,10,19); /* day 0 */ return Math.floor((new Date(d.getFullYear(),d.getMonth(),d.getDate())-start)/864e5); };
+const today0 = () => { const d=new Date(); return new Date(d.getFullYear(),d.getMonth(),d.getDate()); };
+const DAY0 = new Date(2026,10,19), SPECIAL_START = new Date(2026,10,30);   // Mon Nov 30, 2026 = first Monday special
+function puzzleFor(day){
+  const di = Math.round((day - DAY0)/864e5);
+  let m = 0; for (const t=new Date(SPECIAL_START); t<day; t.setDate(t.getDate()+1)) if (t.getDay()===1) m++;
+  if (day>=SPECIAL_START && day.getDay()===1 && m<SPECIALS.length) return { g:SPECIALS[m], special:true };
+  const i = di - Math.min(m, SPECIALS.length);
+  return { g:GAMES[((i%GAMES.length)+GAMES.length)%GAMES.length], special:false };
+}
+// practice = every puzzle already played (daily + Monday specials) + practice-only lineups, never today's or a future one
+function practicePool(){
+  const t=today0(), todays=puzzleFor(t).g, seen=new Set(), pool=[];
+  const add=g=>{ const k=g.team+"|"+g.date; if(g!==todays && !seen.has(k)){ seen.add(k); pool.push(g); } };
+  for (const d=new Date(DAY0); d<t; d.setDate(d.getDate()+1)) add(puzzleFor(new Date(d)).g);
+  PRACTICE.forEach(add);
+  return pool;
+}
 
-const POOL = [...new Set(GAMES.flatMap(g=>[...g.F.flat(),...g.D.flat(),...g.G].map(p=>p[0])).concat(DECOYS))].sort((a,b)=>last(a).localeCompare(last(b)));
+const POOL = [...new Set(GAMES.concat(SPECIALS, PRACTICE).flatMap(g=>[...g.F.flat(),...g.D.flat(),...g.G].map(p=>p[0])).concat(DECOYS))].sort((a,b)=>last(a).localeCompare(last(b)));
 
 // ---------- POINTS ----------
 const PER_PLAYER=100, HINT_COST=50, PERFECT_BONUS=250;
@@ -382,16 +487,17 @@ function points(){ const n=state.found.length, total=all().length, h=3-state.hin
 // ---------- STATE ----------
 let game, state, daily = true, saveKey;
 
-function start(idx, isDaily){
+function start(g, isDaily, special){
   daily = isDaily;
-  game = GAMES[((idx % GAMES.length)+GAMES.length)%GAMES.length];
+  game = g;
   saveKey = isDaily ? "lineup-daily-"+todayKey() : null;
   state = (isDaily && store.get(saveKey)) || { found:[], hinted:[], miss:0, hints:3, over:false, gaveUp:false };
-  $("mode").textContent = isDaily ? "Today's puzzle" : "Practice";
+  $("mode").textContent = isDaily ? (special ? "Monday special 🌍" : "Today's puzzle") : "Practice";
   $("date").textContent = fmtDate(game.date);
-  $("team").textContent = game.team; showLogo(game.team, game.logo); themePage(game.team);
+  $("team").textContent = game.team; showLogo(game.team, game.logo, game.flag); themePage(game.team);
   const y=+game.date.slice(0,4), m=+game.date.slice(5,7), sy = m>=9 ? y : y-1;
-  $("meta").textContent = sy+"–"+String(sy+1).slice(2)+" season · " + game.opp + " · " + game.note;
+  const when = game.event || (sy+"–"+String(sy+1).slice(2)+" season");
+  $("meta").textContent = when + " · " + game.opp + " · " + game.note;
   $("total").textContent = all().length;
   $("msg").textContent = ""; $("guess").value = "";
   render();
@@ -423,32 +529,73 @@ function render(){
   if (saveKey) store.set(saveKey, state);
 }
 
-// Levenshtein distance for typo tolerance
-function lev(a,b){ const m=a.length,n=b.length; if(!m) return n; if(!n) return m;
-  let prev=Array.from({length:n+1},(_,j)=>j);
-  for(let i=1;i<=m;i++){ const cur=[i]; for(let j=1;j<=n;j++) cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1)); prev=cur; }
-  return prev[n]; }
-const allowed = len => len<=3 ? 0 : len<=5 ? 1 : len<=8 ? 2 : 3;
-// best score of a guess vs a name: compare against full name and last name
-function score(q,name){ const full=norm(name), ln=norm(last(name)); return Math.min(lev(q,full), lev(q,ln)); }
+// ---------- NAME MATCHING (forgiving) ----------
+// Levenshtein distance
+function lev(a,b){ // edit distance; swapping two neighbouring letters counts as one slip
+  const m=a.length,n=b.length; if(!m) return n; if(!n) return m;
+  const d=[]; for(let i=0;i<=m;i++){ d[i]=[i]; } for(let j=0;j<=n;j++) d[0][j]=j;
+  for(let i=1;i<=m;i++) for(let j=1;j<=n;j++){
+    const c=a[i-1]===b[j-1]?0:1;
+    d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+c);
+    if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1]) d[i][j]=Math.min(d[i][j],d[i-2][j-2]+1);
+  }
+  return d[m][n]; }
+// smooth over common spelling slips: ck/k, ph/f, y/i, w/v, doubled letters, -ski/-sky
+const simp = s => s.replace(/\s+/g,"").replace(/ck/g,"k").replace(/ph/g,"f").replace(/y/g,"i").replace(/w/g,"v").replace(/(.)\1+/g,"$1");
+// how many slips a name of this length forgives
+const tol = len => len<=3 ? 0 : len<=5 ? 1 : len<=8 ? 2 : len<=11 ? 3 : 4;
+const KEYS = {};
+function keysFor(name){
+  if (KEYS[name]) return KEYS[name];
+  const ln = last(name), parts = ln.split(/[\s-]+/).map(norm).filter(p=>p.length>=3);
+  const ks = [...new Set([norm(name), norm(ln), ...parts].map(simp).filter(Boolean))];
+  return KEYS[name] = ks;
+}
+// distance of a guess to a name (lower = closer); null if not close enough
+function closeness(q, name){
+  let best=null;
+  for (const k of keysFor(name)){
+    let d = lev(q,k);
+    if (q.length>=4 && k.startsWith(q)) d = Math.min(d, 0.5);   // typed the start of the name ("ekman", "luostar")
+    if (d<=tol(Math.max(k.length, q.length)) && (best===null || d<best)) best=d;
+  }
+  return best;
+}
+// Pick who a guess means. Roster players win ties; a clearly closer non-roster name (scratch, backup, opponent) = miss.
+function resolve(raw){
+  let q = norm(raw); if (!q) return null;
+  if (ALIASES[q]) q = norm(ALIASES[q]);
+  q = simp(q);
+  const roster = all(), rosterNames = roster.map(p=>p[0]);
+  let rBest=null, rHits=[];
+  roster.forEach(p=>{ const d=closeness(q,p[0]); if(d===null) return;
+    if (rBest===null || d<rBest){ rBest=d; rHits=[p]; } else if (d===rBest) rHits.push(p); });
+  let oBest=null;
+  for (const n of POOL){ if (rosterNames.includes(n)) continue; const d=closeness(q,n); if(d!==null && (oBest===null||d<oBest)) oBest=d; }
+  const extra = (game.extra||[]).find(n=>{ const d=closeness(q,n); return d!==null && (rBest===null || d<rBest); });
+  // a non-roster name only wins if it is an exact match, or clearly closer (by 2+ slips)
+  if (rBest!==null && (oBest===null || rBest<=oBest || (oBest>0 && rBest<=oBest+1))){
+    const fresh = rHits.find(p=>!state.found.includes(p[0]));   // two players with the same last name: credit the next one
+    return { hit: fresh || rHits[0], dup: !fresh };
+  }
+  if (extra) return { extra };
+  return null;
+}
 
 function guess(raw){
   if (state.over) return;
-  let q = norm(raw); if (!q) return;
-  if (ALIASES[q]) q = norm(ALIASES[q]);
+  if (!norm(raw)) return;
   const roster = all();
   $("guess").value = "";
-  // closest name in the whole pool (roster + other players)
-  const everyone = [...new Set(POOL.concat(roster.map(p=>p[0])))];
-  let best=null, bestD=99;
-  for (const n of everyone){ const d=score(q,n); if (d<bestD){ bestD=d; best=n; } }
-  // last name shared by 2+ roster players needs the full name
-  const hit = (best && bestD<=allowed(q.length)) ? roster.find(p=>p[0]===best) : null;
-  if (hit){
-    if (state.found.includes(hit[0])) return say(hit[0]+" is already on the board.","bad");
+  const r = resolve(raw);
+  if (r && r.hit){
+    const hit=r.hit;
+    if (r.dup) return say(hit[0]+" is already on the board.","bad");
     state.found.push(hit[0]); state.lastFound = hit[0];
     say("✓ "+hit[0]+" · "+where(hit[0]),"good");
     if (state.found.length===roster.length) state.over = true;
+  } else if (r && r.extra){
+    say("👀 "+r.extra+" dressed as the extra skater, but isn't in the lines. Keep going!","bad");
   } else {
     state.miss++;
     say("✗ "+raw.trim()+" didn't dress. No penalty, keep guessing!","bad");
@@ -596,13 +743,18 @@ $("form").addEventListener("submit", e=>{ e.preventDefault(); guess($("guess").v
 $("hintBtn").onclick = hint;
 $("giveBtn").onclick = ()=>{ state.over=true; state.gaveUp=true; render(); };
 $("copyBtn").onclick = async ()=>{ try{ await navigator.clipboard.writeText(shareText()); $("copyBtn").textContent="Copied ✓"; }catch(e){ $("copyBtn").textContent="Long-press the box to copy"; } setTimeout(()=>$("copyBtn").textContent="Copy result",1800); };
-let practiceIdx = Math.floor(Math.random()*GAMES.length);
-const practice = ()=>{ practiceIdx=(practiceIdx+1)%GAMES.length; start(practiceIdx,false); window.scrollTo({top:0,behavior:"smooth"}); };
+let deck = [];
+const practice = ()=>{
+  if (!deck.length){ deck = practicePool().sort(()=>Math.random()-0.5); if (deck.length>1 && deck[0]===game) deck.push(deck.shift()); }
+  if (!deck.length) return;
+  start(deck.shift(), false, false); window.scrollTo({top:0,behavior:"smooth"});
+};
 $("nextBtn").onclick = practice; $("practiceBtn").onclick = practice;
 
 
 
-start(dayIndex(), true);
+const TODAY = puzzleFor(today0());
+start(TODAY.g, true, TODAY.special);
 </script>
 </body>
 </html>
